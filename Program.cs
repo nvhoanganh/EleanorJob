@@ -57,8 +57,7 @@ namespace parser
                 IStep stepProcessor = HelperClass.StepFactoryCreate(step);
                 Dictionary<string, dynamic> stepOutput = stepProcessor.Process(payload, input, vars);
 
-                // output of this step then it will be
-                payload = stepOutput;
+                // output of this step then it will be input to the next step
                 payload = stepOutput;
                 Console.WriteLine($"{prefix}Completed step {stepIndex}:{step.Get("type")}");
                 Console.WriteLine($"- after $payload:\n{payload.Print()}");

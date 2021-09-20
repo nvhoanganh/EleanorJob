@@ -1,0 +1,751 @@
+🏁🏁🏁🏁🏁🏁 Starting Eleanor Job 🏁🏁🏁🏁🏁🏁
+Executing step 1:TRANSFORM
+- current $payload:
+{
+  "firstName": "Anthony",
+  "lastName": "Nguyen",
+  "note": "Anthony is short sighted",
+  "orgId": "GUID-11112222",
+  "deliveryArea": "AlreadyExistArea",
+  "address": {
+    "line1": "60 cramer",
+    "line2": "street",
+    "postcode": "3333"
+  },
+  "trucks": [
+    {
+      "make": "mazda",
+      "model": "cx3",
+      "vin": "334039493849839483948",
+      "rego": "ABC"
+    },
+    {
+      "make": "mazda",
+      "model": "cx5",
+      "vin": "334039493849839483948",
+      "rego": "DEF"
+    }
+  ]
+}
+- current $vars:
+{}
+Completed step 1:TRANSFORM
+- after $payload:
+{
+  "FirstName": "Anthony",
+  "LastName": "Nguyen"
+}
+- after $vars:
+{}
+Executing step 2:CREATE_CRM_ENTITY
+- current $payload:
+{
+  "FirstName": "Anthony",
+  "LastName": "Nguyen"
+}
+- current $vars:
+{}
+Creating new driver using: 
+{
+  "FirstName": "Anthony",
+  "LastName": "Nguyen"
+}
+Completed step 2:CREATE_CRM_ENTITY
+- after $payload:
+{
+  "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+}
+- after $vars:
+{}
+Executing step 3:SET_VARIABLE
+- current $payload:
+{
+  "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+}
+- current $vars:
+{}
+Add variable driver=System.Collections.Generic.Dictionary`2[System.String,System.Object]
+Completed step 3:SET_VARIABLE
+- after $payload:
+{
+  "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Executing step 4:TRANSFORM
+- current $payload:
+{
+  "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Completed step 4:TRANSFORM
+- after $payload:
+{
+  "noteText": "Anthony is short sighted",
+  "objectid": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74",
+  "objecttypecode": "driver"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Executing step 5:CREATE_CRM_ENTITY
+- current $payload:
+{
+  "noteText": "Anthony is short sighted",
+  "objectid": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74",
+  "objecttypecode": "driver"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Creating new annotation using: 
+{
+  "noteText": "Anthony is short sighted",
+  "objectid": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74",
+  "objecttypecode": "driver"
+}
+Completed step 5:CREATE_CRM_ENTITY
+- after $payload:
+{
+  "Crm_Id": "37eab9d6-6cbf-43d6-9a9d-f4084f08ba2d"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Executing step 6:TRANSFORM
+- current $payload:
+{
+  "Crm_Id": "37eab9d6-6cbf-43d6-9a9d-f4084f08ba2d"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Completed step 6:TRANSFORM
+- after $payload:
+{
+  "name": "AlreadyExistArea",
+  "organisationId": {
+    "LogicalEntityName": "Company",
+    "Value": "GUID-11112222"
+  }
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Executing step 7:UPSERT_CRM_ENTITY
+- current $payload:
+{
+  "name": "AlreadyExistArea",
+  "organisationId": {
+    "LogicalEntityName": "Company",
+    "Value": "GUID-11112222"
+  }
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Searching CRM for Entity OperationArea, using:
+ {
+  "name": "AlreadyExistArea",
+  "organisationId": {
+    "LogicalEntityName": "Company",
+    "Value": "GUID-11112222"
+  }
+}
+Updating OperationArea (FoundGUID1111222) using: 
+- name = AlreadyExistArea (System.String)
+- organisationId = parser.EntityReference (parser.EntityReference)
+
+Completed step 7:UPSERT_CRM_ENTITY
+- after $payload:
+{
+  "Crm_Id": "FoundGUID1111222"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Executing step 8:TRANSFORM
+- current $payload:
+{
+  "Crm_Id": "FoundGUID1111222"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Completed step 8:TRANSFORM
+- after $payload:
+{
+  "line1": "60 cramer",
+  "line2": "street",
+  "countryCode": "",
+  "countryName": "",
+  "contactId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Executing step 9:CREATE_CRM_ENTITY
+- current $payload:
+{
+  "line1": "60 cramer",
+  "line2": "street",
+  "countryCode": "",
+  "countryName": "",
+  "contactId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Creating new address using: 
+{
+  "line1": "60 cramer",
+  "line2": "street",
+  "countryCode": "",
+  "countryName": "",
+  "contactId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Completed step 9:CREATE_CRM_ENTITY
+- after $payload:
+{
+  "Crm_Id": "88ab1854-7f52-4c64-a1b2-8030e2e3a11d"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Executing step 10:FOR_EACH
+- current $payload:
+{
+  "Crm_Id": "88ab1854-7f52-4c64-a1b2-8030e2e3a11d"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- Looping through each item in : $input.trucks
+Current Array Element: {"make":"mazda","model":"cx3","vin":"334039493849839483948","rego":"ABC"}
+Scope - ForEach[0] : Executing step 1:SET_VARIABLE
+- current $payload:
+{
+  "make": "mazda",
+  "model": "cx3",
+  "vin": "334039493849839483948",
+  "rego": "ABC"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Add variable truck=System.Collections.Generic.Dictionary`2[System.String,System.Object]
+Scope - ForEach[0] : Completed step 1:SET_VARIABLE
+- after $payload:
+{
+  "make": "mazda",
+  "model": "cx3",
+  "vin": "334039493849839483948",
+  "rego": "ABC"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx3",
+    "vin": "334039493849839483948",
+    "rego": "ABC"
+  }
+}
+Scope - ForEach[0] : Executing step 2:TRANSFORM
+- current $payload:
+{
+  "make": "mazda",
+  "model": "cx3",
+  "vin": "334039493849839483948",
+  "rego": "ABC"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx3",
+    "vin": "334039493849839483948",
+    "rego": "ABC"
+  }
+}
+Scope - ForEach[0] : Completed step 2:TRANSFORM
+- after $payload:
+{
+  "make": "mazda",
+  "model": "cx3",
+  "vin": "334039493849839483948",
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx3",
+    "vin": "334039493849839483948",
+    "rego": "ABC"
+  }
+}
+Scope - ForEach[0] : Executing step 3:CREATE_CRM_ENTITY
+- current $payload:
+{
+  "make": "mazda",
+  "model": "cx3",
+  "vin": "334039493849839483948",
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx3",
+    "vin": "334039493849839483948",
+    "rego": "ABC"
+  }
+}
+Creating new vehicle using: 
+{
+  "make": "mazda",
+  "model": "cx3",
+  "vin": "334039493849839483948",
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Scope - ForEach[0] : Completed step 3:CREATE_CRM_ENTITY
+- after $payload:
+{
+  "Crm_Id": "306f567c-eeaf-44c5-9957-5e6dfc9f8159"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx3",
+    "vin": "334039493849839483948",
+    "rego": "ABC"
+  }
+}
+Scope - ForEach[0] : Executing step 4:TRANSFORM
+- current $payload:
+{
+  "Crm_Id": "306f567c-eeaf-44c5-9957-5e6dfc9f8159"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx3",
+    "vin": "334039493849839483948",
+    "rego": "ABC"
+  }
+}
+Scope - ForEach[0] : Completed step 4:TRANSFORM
+- after $payload:
+{
+  "rego": "ABC",
+  "organisationId": {
+    "LogicalEntityName": "Company",
+    "Value": "GUID-11112222"
+  },
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx3",
+    "vin": "334039493849839483948",
+    "rego": "ABC"
+  }
+}
+Scope - ForEach[0] : Executing step 5:CREATE_CRM_ENTITY
+- current $payload:
+{
+  "rego": "ABC",
+  "organisationId": {
+    "LogicalEntityName": "Company",
+    "Value": "GUID-11112222"
+  },
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx3",
+    "vin": "334039493849839483948",
+    "rego": "ABC"
+  }
+}
+Creating new vehicleRegistration using: 
+{
+  "rego": "ABC",
+  "organisationId": {
+    "LogicalEntityName": "Company",
+    "Value": "GUID-11112222"
+  },
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Scope - ForEach[0] : Completed step 5:CREATE_CRM_ENTITY
+- after $payload:
+{
+  "Crm_Id": "ebe35093-335e-4d27-bb91-09bfea47cb92"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx3",
+    "vin": "334039493849839483948",
+    "rego": "ABC"
+  }
+}
+Current Array Element: {"make":"mazda","model":"cx5","vin":"334039493849839483948","rego":"DEF"}
+Scope - ForEach[1] : Executing step 1:SET_VARIABLE
+- current $payload:
+{
+  "make": "mazda",
+  "model": "cx5",
+  "vin": "334039493849839483948",
+  "rego": "DEF"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx3",
+    "vin": "334039493849839483948",
+    "rego": "ABC"
+  }
+}
+Update variable truck=System.Collections.Generic.Dictionary`2[System.String,System.Object]
+Scope - ForEach[1] : Completed step 1:SET_VARIABLE
+- after $payload:
+{
+  "make": "mazda",
+  "model": "cx5",
+  "vin": "334039493849839483948",
+  "rego": "DEF"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx5",
+    "vin": "334039493849839483948",
+    "rego": "DEF"
+  }
+}
+Scope - ForEach[1] : Executing step 2:TRANSFORM
+- current $payload:
+{
+  "make": "mazda",
+  "model": "cx5",
+  "vin": "334039493849839483948",
+  "rego": "DEF"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx5",
+    "vin": "334039493849839483948",
+    "rego": "DEF"
+  }
+}
+Scope - ForEach[1] : Completed step 2:TRANSFORM
+- after $payload:
+{
+  "make": "mazda",
+  "model": "cx5",
+  "vin": "334039493849839483948",
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx5",
+    "vin": "334039493849839483948",
+    "rego": "DEF"
+  }
+}
+Scope - ForEach[1] : Executing step 3:CREATE_CRM_ENTITY
+- current $payload:
+{
+  "make": "mazda",
+  "model": "cx5",
+  "vin": "334039493849839483948",
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx5",
+    "vin": "334039493849839483948",
+    "rego": "DEF"
+  }
+}
+Creating new vehicle using: 
+{
+  "make": "mazda",
+  "model": "cx5",
+  "vin": "334039493849839483948",
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Scope - ForEach[1] : Completed step 3:CREATE_CRM_ENTITY
+- after $payload:
+{
+  "Crm_Id": "2ba9455d-14ef-46a1-b42d-5bd19b1ec708"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx5",
+    "vin": "334039493849839483948",
+    "rego": "DEF"
+  }
+}
+Scope - ForEach[1] : Executing step 4:TRANSFORM
+- current $payload:
+{
+  "Crm_Id": "2ba9455d-14ef-46a1-b42d-5bd19b1ec708"
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx5",
+    "vin": "334039493849839483948",
+    "rego": "DEF"
+  }
+}
+Scope - ForEach[1] : Completed step 4:TRANSFORM
+- after $payload:
+{
+  "rego": "DEF",
+  "organisationId": {
+    "LogicalEntityName": "Company",
+    "Value": "GUID-11112222"
+  },
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx5",
+    "vin": "334039493849839483948",
+    "rego": "DEF"
+  }
+}
+Scope - ForEach[1] : Executing step 5:CREATE_CRM_ENTITY
+- current $payload:
+{
+  "rego": "DEF",
+  "organisationId": {
+    "LogicalEntityName": "Company",
+    "Value": "GUID-11112222"
+  },
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+- current $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx5",
+    "vin": "334039493849839483948",
+    "rego": "DEF"
+  }
+}
+Creating new vehicleRegistration using: 
+{
+  "rego": "DEF",
+  "organisationId": {
+    "LogicalEntityName": "Company",
+    "Value": "GUID-11112222"
+  },
+  "driverId": {
+    "LogicalEntityName": "Contact",
+    "Value": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  }
+}
+Scope - ForEach[1] : Completed step 5:CREATE_CRM_ENTITY
+- after $payload:
+{
+  "Crm_Id": "598863ad-733b-4ea2-8132-aa3b9cad8826"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx5",
+    "vin": "334039493849839483948",
+    "rego": "DEF"
+  }
+}
+Completed step 10:FOR_EACH
+- after $payload:
+{
+  "Crm_Id": "88ab1854-7f52-4c64-a1b2-8030e2e3a11d"
+}
+- after $vars:
+{
+  "driver": {
+    "Crm_Id": "5a9948eb-f7e2-4888-a2f3-c3e32d787f74"
+  },
+  "truck": {
+    "make": "mazda",
+    "model": "cx5",
+    "vin": "334039493849839483948",
+    "rego": "DEF"
+  }
+}
+🏁🏁🏁🏁🏁🏁 DONE in 60 Seconds 🏁🏁🏁🏁🏁🏁
