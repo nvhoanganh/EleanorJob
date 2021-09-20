@@ -91,8 +91,8 @@ namespace parser
         string SearchCrmObject(string entityType, Dictionary<string, object> filters);
     }
 
-    // to create simple foreignkey, we need to set CRM attribute to this 
-    class EntityReference
+    // to create simple CRM foreignkey, we need to specify these 2 fields
+    class CrmEntityReference
     {
         public string LogicalEntityName { get; set; }
         public object Value { get; set; }
@@ -183,7 +183,7 @@ namespace parser
                 if (prop.Value.ValueKind == JsonValueKind.Object)
                 {
                     // complex type
-                    var vl = HelperClass.CreateCrmComplexFieldType(prop.Value, input, payload, vars);
+                    var vl = HelperClass.CreateComplexFieldType(prop.Value, input, payload, vars);
                     dict.Add(prop.Name, vl);
                 }
                 else
@@ -368,12 +368,12 @@ namespace parser
         }
 
 
-        public static object CreateCrmComplexFieldType(JsonElement fieldDef, Dictionary<string, object> input, Dictionary<string, object> payload, Dictionary<string, object> vars)
+        public static object CreateComplexFieldType(JsonElement fieldDef, Dictionary<string, object> input, Dictionary<string, object> payload, Dictionary<string, object> vars)
         {
-            if (fieldDef.Get("type").Value.ToString() == "ENTITY_REF")
+            if (fieldDef.Get("type").Value.ToString() == "CRM_ENTITY_REF")
             {
                 // create copmlex field type in CRM
-                return new EntityReference
+                return new CrmEntityReference
                 {
                     LogicalEntityName = fieldDef.Get("refType").Value.ToString(),
                     // value prop contains the expression which we need to evaluate
