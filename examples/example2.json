@@ -1,0 +1,26 @@
+{
+	"firstName": "Anthony",
+	"lastName": "Nguyen",
+	"note": "Anthony is short sighted",
+	"orgId": "GUID-11112222",
+	"deliveryArea": "AlreadyExistArea",
+	"address": {
+		"line1": "60 cramer",
+		"line2": "street",
+		"postcode": "3333"
+	},
+	"trucks": [
+		{
+			"make": "mazda",
+			"model": "cx3",
+			"vin": "334039493849839483948",
+			"rego": "ABC"
+		},
+		{
+			"make": "mazda",
+			"model": "cx5",
+			"vin": "334039493849839483948",
+			"rego": "DEF"
+		}
+	]
+}

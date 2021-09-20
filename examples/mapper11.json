@@ -1,0 +1,114 @@
+{
+	"steps": [
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"FirstName": "$payload.firstName",
+				"LastName": "$payload.lastName"
+			}
+		},
+		{
+			"type": "CREATE_CRM_ENTITY",
+			"destEntityName": "driver"
+		},
+		{
+			"type": "SET_VARIABLE",
+			"name": "driver",
+			"value": "$payload"
+		},
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"noteText": "$input.note",
+				"objectid": "$payload.Crm_Id",
+				"objecttypecode": "\"driver\""
+			}
+		},
+		{
+			"type": "CREATE_CRM_ENTITY",
+			"destEntityName": "annotation"
+		},
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"name": "$input.deliveryArea",
+				"organisationId": {
+					"type": "ENTITY_REF",
+					"refType": "Company",
+					"value": "$input.orgId"
+				}
+			}
+		},
+		{
+			"type": "UPSERT_CRM_ENTITY",
+			"searchByFields": ["name", "organisationId"],
+			"destEntityName": "OperationArea"
+		},
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"line1": "$input.address.line1",
+				"line2": "$input.address.line2",
+				"countryCode": "$input.address.country.code",
+				"countryName": "$input.address.country.name",
+				"contactId": {
+					"type": "ENTITY_REF",
+					"refType": "Contact",
+					"value": "$vars.driver.Crm_Id"
+				}
+			}
+		},
+		{
+			"type": "CREATE_CRM_ENTITY",
+			"destEntityName": "address"
+		},
+		{
+			"type": "FOR_EACH",
+			"collection": "$input.trucks",
+			"steps": [
+				{
+					"type": "SET_VARIABLE",
+					"name": "truck",
+					"value": "$payload"
+				},
+				{
+					"type": "TRANSFORM",
+					"jsonSchema": {
+						"make": "$payload.make",
+						"model": "$payload.model",
+						"vin": "$payload.vin",
+						"driverId": {
+							"type": "ENTITY_REF",
+							"refType": "Contact",
+							"value": "$vars.driver.Crm_Id"
+						}
+					}
+				},
+				{
+					"type": "CREATE_CRM_ENTITY",
+					"destEntityName": "vehicle"
+				},
+				{
+					"type": "TRANSFORM",
+					"jsonSchema": {
+						"rego": "$vars.truck.rego",
+						"organisationId": {
+							"type": "ENTITY_REF",
+							"refType": "Company",
+							"value": "$input.orgId"
+						},
+						"driverId": {
+							"type": "ENTITY_REF",
+							"refType": "Contact",
+							"value": "$vars.driver.Crm_Id"
+						}
+					}
+				},
+				{
+					"type": "CREATE_CRM_ENTITY",
+					"destEntityName": "vehicleRegistration"
+				}
+			]
+		}
+	]
+}

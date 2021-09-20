@@ -1,0 +1,48 @@
+{
+	"steps": [
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"FirstName": "$payload.firstName",
+				"LastName": "$payload.lastName"
+			}
+		},
+		{
+			"type": "CREATE_CRM_ENTITY",
+			"destEntityName": "driver"
+		},
+		{
+			"type": "SET_VARIABLE",
+			"name": "driver",
+			"value": "$payload.Crm_Id"
+		},
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"noteText": "$input.note",
+				"objectid": "$payload.Crm_Id",
+				"objecttypecode": "\"driver\""
+			}
+		},
+		{
+			"type": "CREATE_CRM_ENTITY",
+			"destEntityName": "annotation"
+		},
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"name": "$input.deliveryArea",
+				"organisationId": {
+					"type": "ENTITY_REF",
+					"refType": "Company",
+					"value": "$input.orgId"
+				}
+			}
+		},
+		{
+			"type": "UPSERT_CRM_ENTITY",
+			"searchByFields": ["name", "organisationId"],
+			"destEntityName": "OperationArea"
+		}
+	]
+}
