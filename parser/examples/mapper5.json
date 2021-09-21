@@ -1,0 +1,32 @@
+{
+	"steps": [
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"FirstName": "$payload.firstName",
+				"LastName": "$payload.lastName"
+			}
+		},
+		{
+			"type": "CREATE_CRM_ENTITY",
+			"destEntityName": "driver"
+		},
+		{
+			"type": "SET_VARIABLE",
+			"name": "driver",
+			"value": "$payload.Crm_Id"
+		},
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"noteText": "$input.note",
+				"objectid": "$payload.Crm_Id",
+				"objecttypecode": "\"driver\""
+			}
+		},
+		{
+			"type": "CREATE_CRM_ENTITY",
+			"destEntityName": "annotation"
+		}
+	]
+}

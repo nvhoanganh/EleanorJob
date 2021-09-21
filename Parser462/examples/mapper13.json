@@ -1,0 +1,71 @@
+{
+  "steps": [
+    {
+      "type": "TRANSFORM",
+      "jsonSchema": {
+        "firstname": "$payload.firstName",
+        "lastname": "$payload.lastName"
+      }
+    },
+    {
+      "type": "CREATE_CRM_ENTITY",
+      "destEntityName": "contact"
+    },
+    {
+      "type": "SET_VARIABLE",
+      "name": "contactId",
+      "value": "$payload.Crm_Id"
+    },
+    {
+      "type": "TRANSFORM",
+      "jsonSchema": {
+        "form_firstname": "$input.firstName",
+        "form_lastname": "$input.lastName",
+        "form_message": "$input.message",
+        "form_name": "$input.subject",
+        "form_contactid": {
+          "type": "CRM_ENTITY_REF",
+          "refType": "contact",
+          "value": "$vars.contactId"
+        },
+        "form_email": "$input.email"
+      }
+    },
+    {
+      "type": "CREATE_CRM_ENTITY",
+      "destEntityName": "form_enquiry"
+    },
+    {
+      "type": "SET_VARIABLE",
+      "name": "enquiryId",
+      "value": "$payload.Crm_Id"
+    },
+    {
+      "type": "FOR_EACH",
+      "collection": "$input.projects",
+      "steps": [
+        {
+          "type": "SET_VARIABLE",
+          "name": "projectId",
+          "value": "$payload.projectid"
+        },
+        {
+          "type": "TRANSFORM",
+          "jsonSchema": {
+            "form_enquiry": {
+              "type": "CRM_ENTITY_REF",
+              "refType": "form_enquiry",
+              "value": "$vars.enquiryId"
+            }
+          }
+        },
+        {
+          "type": "UPDATE_CRM_ENTITY",
+          "destEntityName": "bpp_erfproject",
+          "id": "$vars.projectId"
+        }
+      ]
+    }
+  ]
+}
+

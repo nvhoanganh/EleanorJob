@@ -1,0 +1,15 @@
+{
+	"steps": [
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"FirstName": "$payload.firstName",
+				"LastName": "$payload.lastName"
+			}
+		},
+		{
+			"type": "CREATE_CRM_ENTITY",
+			"destEntityName": "driver"
+		}
+	]
+}

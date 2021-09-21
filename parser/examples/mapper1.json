@@ -1,0 +1,12 @@
+{
+  "steps": [
+    {
+      "type": "TRANSFORM",
+      "jsonSchema": {
+        "FirstName": "$payload.firstName",
+        "LastName": "$payload.lastName"
+      }
+    }
+  ]
+}
+
