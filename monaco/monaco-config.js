@@ -7,21 +7,21 @@ function createDependencyProposals(range) {
 			label: '"type": "CRM_ENTITY_CREATOR"',
 			kind: monaco.languages.CompletionItemKind.Function,
 			insertText:
-				'{\n\t"type": "CRM_ENTITY_CREATOR",\n\t"destEntityName": "name of entity"\n}',
+				'{\n\t"type": "CRM_ENTITY_CREATOR",\n\t"destEntityName": \n}',
 			range: range,
 		},
 		{
 			label: '"type": "UPSERT_CRM_ENTITY"',
 			kind: monaco.languages.CompletionItemKind.Function,
 			insertText:
-				'{\n\t"type": "UPSERT_CRM_ENTITY",\n\t"searchByFields": ["fiedl1", "field2"],\n\t"destEntityName": "name of entity"\n}',
+				'{\n\t"type": "UPSERT_CRM_ENTITY",\n\t"searchByFields": ["fiedl1", "field2"],\n\t"destEntityName": \n}',
 			range: range,
 		},
 		{
 			label: '"type": "SET_VARIABLE"',
 			kind: monaco.languages.CompletionItemKind.Function,
 			insertText:
-				'{\n\t"type": "SET_VARIABLE",\n\t"name": "name of entity",\n\t"value": "expression"\n}',
+				'{\n\t"type": "SET_VARIABLE",\n\t"name": "var1",\n\t"value": \n}',
 			range: range,
 		},
 		{
@@ -37,7 +37,8 @@ function createDependencyProposals(range) {
 			insertText:
 				'{\n\t"type": "FOR_EACH",\n\t"collection": "expression",\n\t"steps": [\n\t\t\n\t]\n}',
 			range: range,
-		},
+    },
+    // vars
 		{
 			label: '"$payload"',
 			kind: monaco.languages.CompletionItemKind.Function,
@@ -56,6 +57,50 @@ function createDependencyProposals(range) {
 			insertText: '"$input"',
 			range: range,
 		},
+    // CRM entities
+		{
+			label: '"entity: vehicle"',
+			kind: monaco.languages.CompletionItemKind.Function,
+			insertText: '"vehicle"',
+			range: range,
+		},
+		{
+			label: '"entity: contact"',
+			kind: monaco.languages.CompletionItemKind.Function,
+			insertText: '"contact"',
+			range: range,
+		},
+		{
+			label: '"entity: company"',
+			kind: monaco.languages.CompletionItemKind.Function,
+			insertText: '"company"',
+			range: range,
+		},
+		{
+			label: '"entity: operationArea"',
+			kind: monaco.languages.CompletionItemKind.Function,
+			insertText: '"operationArea"',
+			range: range,
+		},
+		{
+			label: '"entity: driver"',
+			kind: monaco.languages.CompletionItemKind.Function,
+			insertText: '"driver"',
+			range: range,
+    },
+    // helpers
+    {
+			label: '"field: objectid"',
+			kind: monaco.languages.CompletionItemKind.Function,
+			insertText: '"objectid": ',
+			range: range,
+    },
+    {
+			label: '"field: objecttypecode"',
+			kind: monaco.languages.CompletionItemKind.Function,
+			insertText: '"objecttypecode": ',
+			range: range,
+    },
 	];
 }
 
