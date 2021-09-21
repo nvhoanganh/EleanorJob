@@ -1,7 +1,5 @@
-// https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-completion-provider-example
 
-// https://codesandbox.io/s/c2nli?file=/src/TargetBox.tsx
-function createDependencyProposals(range) {
+function getSuggestions(monaco, range) {
 	// returning a static list of proposals, not even looking at the prefix (filtering is done by the Monaco editor),
 	// here you could do a server side lookup
 	return [
@@ -39,8 +37,8 @@ function createDependencyProposals(range) {
 			insertText:
 				'{\n\t"type": "FOR_EACH",\n\t"collection": "expression",\n\t"steps": [\n\t\t\n\t]\n}',
 			range: range,
-    },
-    // vars
+		},
+		// vars
 		{
 			label: '"$payload"',
 			kind: monaco.languages.CompletionItemKind.Function,
@@ -59,7 +57,7 @@ function createDependencyProposals(range) {
 			insertText: '"$input"',
 			range: range,
 		},
-    // CRM entities
+		// CRM entities
 		{
 			label: '"entity: vehicle"',
 			kind: monaco.languages.CompletionItemKind.Function,
@@ -89,39 +87,37 @@ function createDependencyProposals(range) {
 			kind: monaco.languages.CompletionItemKind.Function,
 			insertText: '"driver"',
 			range: range,
-    },
-    // helpers
-    {
+		},
+		// helpers
+		{
 			label: '"field: objectid"',
 			kind: monaco.languages.CompletionItemKind.Function,
 			insertText: '"objectid": ',
 			range: range,
-    },
-    {
+		},
+		{
 			label: '"field: objecttypecode"',
 			kind: monaco.languages.CompletionItemKind.Function,
 			insertText: '"objecttypecode": ',
 			range: range,
-    },
+		},
 	];
 }
 
-monaco.languages.registerCompletionItemProvider('json', {
-	provideCompletionItems: function (model, position) {
-		var word = model.getWordUntilPosition(position);
-		var range = {
-			startLineNumber: position.lineNumber,
-			endLineNumber: position.lineNumber,
-			startColumn: word.startColumn,
-			endColumn: word.endColumn,
-		};
-		return {
-			suggestions: createDependencyProposals(range),
-		};
-	},
-});
+export function registerAutoComplete(monaco) {
+	monaco.languages.registerCompletionItemProvider('json', {
+		provideCompletionItems: function (model, position) {
+			var word = model.getWordUntilPosition(position);
+			var range = {
+				startLineNumber: position.lineNumber,
+				endLineNumber: position.lineNumber,
+				startColumn: word.startColumn,
+				endColumn: word.endColumn,
+			};
+			return {
+				suggestions: getSuggestions(monaco, range),
+			};
+		},
+	});
+}
 
-monaco.editor.create(document.getElementById('container'), {
-	value: '{\n\t"steps": [\n\t\t\n\t]\n}\n',
-	language: 'json',
-});
