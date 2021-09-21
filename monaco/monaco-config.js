@@ -1,4 +1,6 @@
 // https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-completion-provider-example
+
+// https://codesandbox.io/s/c2nli?file=/src/TargetBox.tsx
 function createDependencyProposals(range) {
 	// returning a static list of proposals, not even looking at the prefix (filtering is done by the Monaco editor),
 	// here you could do a server side lookup
