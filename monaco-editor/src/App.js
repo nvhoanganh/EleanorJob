@@ -11,6 +11,7 @@ function App() {
 			registerAutoComplete(monaco);
 		}
 	}, [monaco]);
+	
 	return (
 		<Editor
 			height='90vh'
