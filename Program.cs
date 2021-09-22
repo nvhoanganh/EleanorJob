@@ -16,18 +16,6 @@ namespace parser
                 return;
             }
 
-            var test = new Dictionary<string, string>() {
-                { "name.firstname", "Anthony"},
-                { "name.lastname", "Nguyen"},
-            };
-
-            var result = test.ParseDotNotation();
-            Console.WriteLine(JsonSerializer.Serialize(result, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        }));
-            return;
-
             string formRspText = System.IO.File.ReadAllText($"./examples/{args[0]}");
             string mapperText = System.IO.File.ReadAllText($"./examples/{args[1]}");
 
@@ -41,7 +29,9 @@ namespace parser
         {
             Console.WriteLine("🏁🏁🏁🏁🏁🏁 Starting Eleanor Job 🏁🏁🏁🏁🏁🏁");
 
-            var input = JsonSerializer.Deserialize<Dictionary<string, dynamic>>(formResp);
+            var nestedJson = HelperClass.ConvertToNestedJson(formResp);
+            var input = JsonSerializer.Deserialize<Dictionary<string, dynamic>>(nestedJson);
+
             var definition = JsonSerializer.Deserialize<Dictionary<string, dynamic>>(mapperDef);
             var vars = new Dictionary<string, dynamic>();
             var steps = definition["steps"].EnumerateArray();
@@ -407,6 +397,13 @@ namespace parser
             throw new Exception($"{step.Get("type")} is not a known step");
         }
 
+        public static string ConvertToNestedJson(string dotNotation)
+        {
+            var dotnotation = JsonSerializer.Deserialize<Dictionary<string, object>>(dotNotation);
+            var nestedDict = dotnotation.ParseDotNotation();
+            var nestedJson = JsonSerializer.Serialize(nestedDict);
+            return nestedJson;
+        }
     }
 
     public static partial class ExtensionMethods
@@ -461,7 +458,7 @@ namespace parser
             return jsonElement;
         }
 
-        private static Dictionary<string, object> CheckAndCreateKey(string key, string value, Dictionary<string, object> dict) 
+        private static Dictionary<string, object> CheckAndCreateKey(string key, object value, Dictionary<string, object> dict) 
         {
             if (!key.Contains(".")) 
             {
@@ -471,22 +468,53 @@ namespace parser
 
             var firstLevel = key.Split('.')[0];
             var remainingParts = key.Replace(firstLevel + ".", ""); 
+            var index = -1;
+            if (firstLevel.Contains("[")) 
+            {
+                var bits = firstLevel.Split('[', ']');
+                firstLevel = bits[0]; 
+                index = int.Parse(bits[1]);
+            }
 
             if (!dict.ContainsKey(firstLevel)) 
             {
+                // new property
                 var nestedDict = CheckAndCreateKey(remainingParts, value, new Dictionary<string, object>());
+                if (index > -1) 
+                {
+                    // this is an Array
+                    var list = new List<Dictionary<string, object>>();
+
+                    while (list.Count <= index) // add require length, in case when index are in the wrong order (e.g. cars[1].make appears first before cars[0].model)
+                        list.Add(new Dictionary<string, object>());
+
+                    list[index] = nestedDict;
+                    dict[firstLevel] = list;
+                    return dict;
+                }
+
                 dict[firstLevel] = nestedDict;
+                return dict;
             }
-            else
+
+            if (index > -1) 
             {
-                var current = (Dictionary<string, object>) dict[firstLevel];
-                dict[firstLevel] = CheckAndCreateKey(remainingParts, value, current);
+                var list = (List<Dictionary<string, object>>) dict[firstLevel];
+                while (list.Count <= index) // add missing items
+                    list.Add(new Dictionary<string, object>());
+
+                var nestedDict = CheckAndCreateKey(remainingParts, value, (Dictionary<string, object>) list[index]);
+                dict[firstLevel] = list;
+                return dict;
             }
+            
+            var current = (Dictionary<string, object>) dict[firstLevel];
+            dict[firstLevel] = CheckAndCreateKey(remainingParts, value, current);
             return dict;
         }
-        public static Dictionary<string, object> ParseDotNotation(this Dictionary<string, string> input) 
+
+        public static Dictionary<string, object> ParseDotNotation(this Dictionary<string, object> input) 
         {
-            // https://stackoverflow.com/questions/67277008/how-can-i-convert-a-string-with-dot-notation-and-arrays-to-json
             var formattedDictionary = new Dictionary<string, object>();
             foreach (var pair in input)
             {

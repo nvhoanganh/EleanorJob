@@ -32,11 +32,7 @@
 			"type": "TRANSFORM",
 			"jsonSchema": {
 				"name": "$input.deliveryArea",
-				"organisationId": {
-					"type": "CRM_ENTITY_REF",
-					"refType": "Company",
-					"value": "$input.orgId"
-				}
+				"organisationId": "parseCrmEntity('Company', $input.orgId)"
 			}
 		},
 		{
