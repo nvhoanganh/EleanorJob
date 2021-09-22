@@ -16,6 +16,18 @@ namespace parser
                 return;
             }
 
+            var test = new Dictionary<string, string>() {
+                { "name.firstname", "Anthony"},
+                { "name.lastname", "Nguyen"},
+            };
+
+            var result = test.ParseDotNotation();
+            Console.WriteLine(JsonSerializer.Serialize(result, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        }));
+            return;
+
             string formRspText = System.IO.File.ReadAllText($"./examples/{args[0]}");
             string mapperText = System.IO.File.ReadAllText($"./examples/{args[1]}");
 
@@ -396,6 +408,7 @@ namespace parser
         }
 
     }
+
     public static partial class ExtensionMethods
     {
         // https://stackoverflow.com/questions/61553962/getting-nested-properties-with-system-text-json
@@ -446,6 +459,51 @@ namespace parser
             }
 
             return jsonElement;
+        }
+
+        private static Dictionary<string, object> CheckAndCreateKey(string key, string value, Dictionary<string, object> dict) 
+        {
+            // 1. dict: {}
+            // 2. dict: { name: { firstname: anthony }}
+            if (!key.Contains(".")) 
+            {
+                // prop
+                dict[key] = value;
+                return dict;
+            }
+
+            // 1. name.firstname: anthony
+            // 2. name.lastname: nguyen
+            var firstLevel = key.Split('.')[0]; // 1. name
+            var remainingParts = key.Replace(firstLevel + ".", ""); 
+            // 1. firstname
+            // 2. lastname
+
+            // use recursion 
+            if (!dict.ContainsKey(firstLevel)) 
+            {
+                // 1. no key found yet
+                var nestedDict = CheckAndCreateKey(remainingParts, value, new Dictionary<string, object>());
+                dict[firstLevel] = nestedDict;
+                //1. { name: { firstname: anthony }}
+            }
+            else
+            {
+                // 1. found name
+                var current = (Dictionary<string, object>) dict[firstLevel];
+                dict[firstLevel] = CheckAndCreateKey(remainingParts, value, current);
+            }
+            return dict;
+        }
+        public static Dictionary<string, object> ParseDotNotation(this Dictionary<string, string> input) 
+        {
+            // https://stackoverflow.com/questions/67277008/how-can-i-convert-a-string-with-dot-notation-and-arrays-to-json
+            var formattedDictionary = new Dictionary<string, object>();
+            foreach (var pair in input)
+            {
+                CheckAndCreateKey(pair.Key, pair.Value, formattedDictionary);
+            }
+            return formattedDictionary;
         }
     }
     #endregion
