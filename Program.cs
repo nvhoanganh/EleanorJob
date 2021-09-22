@@ -463,33 +463,22 @@ namespace parser
 
         private static Dictionary<string, object> CheckAndCreateKey(string key, string value, Dictionary<string, object> dict) 
         {
-            // 1. dict: {}
-            // 2. dict: { name: { firstname: anthony }}
             if (!key.Contains(".")) 
             {
-                // prop
                 dict[key] = value;
                 return dict;
             }
 
-            // 1. name.firstname: anthony
-            // 2. name.lastname: nguyen
-            var firstLevel = key.Split('.')[0]; // 1. name
+            var firstLevel = key.Split('.')[0];
             var remainingParts = key.Replace(firstLevel + ".", ""); 
-            // 1. firstname
-            // 2. lastname
 
-            // use recursion 
             if (!dict.ContainsKey(firstLevel)) 
             {
-                // 1. no key found yet
                 var nestedDict = CheckAndCreateKey(remainingParts, value, new Dictionary<string, object>());
                 dict[firstLevel] = nestedDict;
-                //1. { name: { firstname: anthony }}
             }
             else
             {
-                // 1. found name
                 var current = (Dictionary<string, object>) dict[firstLevel];
                 dict[firstLevel] = CheckAndCreateKey(remainingParts, value, current);
             }
