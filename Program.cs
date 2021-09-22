@@ -485,7 +485,7 @@ namespace parser
                     // this is an Array
                     var list = new List<Dictionary<string, object>>();
 
-                    while (list.Count <= index) // add require length, in case when index are in the wrong order (e.g. cars[1].make appears first before cars[0].model)
+                    while (list.Count <= index) // add require length, in case when index are in the wrong order (e.g. cars[1].make appears first before cars[0].make)
                         list.Add(new Dictionary<string, object>());
 
                     list[index] = nestedDict;
