@@ -21,7 +21,7 @@
 			"jsonSchema": {
 				"noteText": "$input.note",
 				"objectid": "$payload.Crm_Id",
-				"objecttypecode": "\"driver\""
+				"objecttypecode": "'driver'"
 			}
 		},
 		{
@@ -32,11 +32,7 @@
 			"type": "TRANSFORM",
 			"jsonSchema": {
 				"name": "$input.deliveryArea",
-				"organisationId": {
-					"type": "ENTITY_REF",
-					"refType": "Company",
-					"value": "$input.orgId"
-				}
+				"organisationId": "crmEntity('Company', $input.orgId)"
 			}
 		},
 		{

@@ -21,7 +21,7 @@
 			"jsonSchema": {
 				"noteText": "$input.note",
 				"objectid": "$payload.Crm_Id",
-				"objecttypecode": "\"driver\""
+				"objecttypecode": "'driver'"
 			}
 		}
 	]

@@ -1,0 +1,15 @@
+{
+	"steps": [
+		{
+			"type": "TRANSFORM",
+			"jsonSchema": {
+				"FirstName": "$payload.firstName",
+				"LastName": "$payload.lastName",
+				"Postcode": "int($payload.address.postcode)",
+				"LeftHanded": "bool($payload.lefthand)",
+				"Org_Id": "crmEntity('company', $payload.orgId)",
+				"organisationId": "crmEntity('Company', $payload.orgId)"
+			}
+		}
+	]
+}

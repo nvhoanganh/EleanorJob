@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using static System.Text.Json.JsonElement;
 
 namespace parser
@@ -94,10 +95,10 @@ namespace parser
     }
 
     // to create simple CRM foreignkey, we need to specify these 2 fields
-    class CrmEntityReference
+    class EntityReference
     {
-        public string LogicalEntityName { get; set; }
-        public object Value { get; set; }
+        public string LogicalName { get; set; }
+        public object Id { get; set; }
     }
 
     class MockCrmService : ICrmService
@@ -182,19 +183,9 @@ namespace parser
 
             foreach (JsonProperty prop in _jsonSchema.EnumerateObject())
             {
-                if (prop.Value.ValueKind == JsonValueKind.Object)
-                {
-                    // complex type
-                    var vl = HelperClass.CreateComplexFieldType(prop.Value, input, payload, vars);
-                    dict.Add(prop.Name, vl);
-                }
-                else
-                {
-                    var valueExpression = prop.Value.ToString();
-                    var vl = HelperClass.Evaluate(valueExpression, input, payload, vars);
-                    dict.Add(prop.Name, vl);
-                }
-
+                var valueExpression = prop.Value.ToString();
+                var vl = HelperClass.Evaluate(valueExpression, input, payload, vars);
+                dict.Add(prop.Name, vl);
             }
             return dict;
         }
@@ -337,53 +328,65 @@ namespace parser
                 }
             };
 
-            // e.g hardcoded values or access full properties
-            if (expression.IndexOf('.') < 0)
+            Func<string, dynamic> GetValueFromExpression = delegate (string express)
             {
-                // hardcoded string
-                if (expression.StartsWith("\"") && expression.EndsWith("\""))
+                // e.g hardcoded values or access full properties
+                if (expression.IndexOf('.') < 0)
                 {
-                    return expression.Replace("\"", "");
+                    // hardcoded string
+                    if (expression.StartsWith("'") && expression.EndsWith("'"))
+                    {
+                        return expression.Replace("'", "");
+                    }
+                    // just return the object 
+                    return ParseLevel1(expression);
                 }
-                // just return the object 
-                return ParseLevel1(expression);
-            }
 
-            var parts = expression.Split('.');
-            dynamic root = ParseLevel1(parts[0])[parts[1]];
+                var parts = expression.Split('.');
+                dynamic root = ParseLevel1(parts[0])[parts[1]];
 
-            if (parts.Length >= 3)
-            {
-                // dot notation express (e.g "$input.address.country.code")
-                // https://stackoverflow.com/questions/22669044/how-to-get-the-index-of-second-comma-in-a-string/22669242
-                var secondDot = expression.IndexOf('.', expression.IndexOf('.') + 1);
-                var subPath = expression.Substring(secondDot);
-
-                // we need to covert the value back to JSONElement so that we can evaluate it by using dot notation
-                var jsonStr = JsonSerializer.Serialize(root);
-                JsonElement ele = JsonSerializer.Deserialize<JsonElement>(jsonStr);
-
-                return ele.GetNestedJsonElement(subPath).GetJsonElementValue();
-            }
-
-            return root;
-        }
-
-
-        public static object CreateComplexFieldType(JsonElement fieldDef, Dictionary<string, object> input, Dictionary<string, object> payload, Dictionary<string, object> vars)
-        {
-            if (fieldDef.Get("type").Value.ToString() == "CRM_ENTITY_REF")
-            {
-                // create copmlex field type in CRM
-                return new CrmEntityReference
+                if (parts.Length >= 3)
                 {
-                    LogicalEntityName = fieldDef.Get("refType").Value.ToString(),
-                    // value prop contains the expression which we need to evaluate
-                    Value = HelperClass.Evaluate(fieldDef.Get("value").Value.ToString(), input, payload, vars)
-                };
+                    // dot notation express (e.g "$input.address.country.code")
+                    // https://stackoverflow.com/questions/22669044/how-to-get-the-index-of-second-comma-in-a-string/22669242
+                    var secondDot = expression.IndexOf('.', expression.IndexOf('.') + 1);
+                    var subPath = expression.Substring(secondDot);
+
+                    // we need to covert the value back to JSONElement so that we can evaluate it by using dot notation
+                    var jsonStr = JsonSerializer.Serialize(root);
+                    JsonElement ele = JsonSerializer.Deserialize<JsonElement>(jsonStr);
+
+                    return ele.GetNestedJsonElement(subPath).GetJsonElementValue();
+                }
+
+                return root;
+            };
+
+            var regex = new Regex(@"(?<method>[^\(]*)(\((?<params>.*)\))[^\)]*");
+
+            if (!regex.IsMatch(expression)) return GetValueFromExpression(expression);
+
+            // e.g. int($payload.address.postcode)
+            GroupCollection groups = regex.Match(expression).Groups;
+            var method = groups["method"].Value;
+            var methodParams = groups["params"].Value;
+            switch (method)
+            {
+                case "crmEntity":
+                    return new EntityReference
+                    {
+                        LogicalName = Evaluate(methodParams.Split(',')[0].Trim(), input, payload, vars).ToString(),
+                        Id = Guid.Parse(Evaluate(methodParams.Split(',')[1].Trim(), input, payload, vars).ToString())
+                    };
+                case "int":
+                    return int.Parse(Evaluate(methodParams.Trim(), input, payload, vars).ToString());
+                case "guid":
+                    return Guid.Parse(Evaluate(methodParams.Trim(), input, payload, vars).ToString());
+                case "bool":
+                    return bool.Parse(Evaluate(methodParams.Trim(), input, payload, vars).ToString());
+                default:
+                    throw new Exception($"Method '{method}' not recognized");
             }
-            // todo: add more type here
-            return null;
         }
 
         public static IStep StepFactoryCreate(JsonElement step)
@@ -458,29 +461,29 @@ namespace parser
             return jsonElement;
         }
 
-        private static Dictionary<string, object> CheckAndCreateKey(string key, object value, Dictionary<string, object> dict) 
+        private static Dictionary<string, object> CheckAndCreateKey(string key, object value, Dictionary<string, object> dict)
         {
-            if (!key.Contains(".")) 
+            if (!key.Contains("."))
             {
                 dict[key] = value;
                 return dict;
             }
 
             var firstLevel = key.Split('.')[0];
-            var remainingParts = key.Replace(firstLevel + ".", ""); 
+            var remainingParts = key.Replace(firstLevel + ".", "");
             var index = -1;
-            if (firstLevel.Contains("[")) 
+            if (firstLevel.Contains("["))
             {
                 var bits = firstLevel.Split('[', ']');
-                firstLevel = bits[0]; 
+                firstLevel = bits[0];
                 index = int.Parse(bits[1]);
             }
 
-            if (!dict.ContainsKey(firstLevel)) 
+            if (!dict.ContainsKey(firstLevel))
             {
                 // new property
                 var nestedDict = CheckAndCreateKey(remainingParts, value, new Dictionary<string, object>());
-                if (index > -1) 
+                if (index > -1)
                 {
                     // this is an Array
                     var list = new List<Dictionary<string, object>>();
@@ -497,23 +500,23 @@ namespace parser
                 return dict;
             }
 
-            if (index > -1) 
+            if (index > -1)
             {
-                var list = (List<Dictionary<string, object>>) dict[firstLevel];
+                var list = (List<Dictionary<string, object>>)dict[firstLevel];
                 while (list.Count <= index) // add missing items
                     list.Add(new Dictionary<string, object>());
 
-                var nestedDict = CheckAndCreateKey(remainingParts, value, (Dictionary<string, object>) list[index]);
+                var nestedDict = CheckAndCreateKey(remainingParts, value, (Dictionary<string, object>)list[index]);
                 dict[firstLevel] = list;
                 return dict;
             }
-            
-            var current = (Dictionary<string, object>) dict[firstLevel];
+
+            var current = (Dictionary<string, object>)dict[firstLevel];
             dict[firstLevel] = CheckAndCreateKey(remainingParts, value, current);
             return dict;
         }
 
-        public static Dictionary<string, object> ParseDotNotation(this Dictionary<string, object> input) 
+        public static Dictionary<string, object> ParseDotNotation(this Dictionary<string, object> input)
         {
             var formattedDictionary = new Dictionary<string, object>();
             foreach (var pair in input)

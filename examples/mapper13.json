@@ -21,7 +21,7 @@
 			"jsonSchema": {
 				"noteText": "$input.note",
 				"objectid": "$payload.Crm_Id",
-				"objecttypecode": "\"driver\""
+				"objecttypecode": "'driver'"
 			}
 		},
 		{
@@ -32,11 +32,7 @@
 			"type": "TRANSFORM",
 			"jsonSchema": {
 				"name": "$input.deliveryArea",
-				"organisationId": {
-					"type": "ENTITY_REF",
-					"refType": "Company",
-					"value": "$input.orgId"
-				}
+				"organisationId": "crmEntity('Company', $input.orgId)"
 			}
 		},
 		{
@@ -51,11 +47,7 @@
 				"line2": "$input.address.line2",
 				"countryCode": "$input.address.country.code",
 				"countryName": "$input.address.country.name",
-				"contactId": {
-					"type": "ENTITY_REF",
-					"refType": "Contact",
-					"value": "$vars.driver.Crm_Id"
-				}
+				"contactId": "crmEntity('Contact', $vars.driver.Crm_Id)"
 			}
 		},
 		{
@@ -77,16 +69,24 @@
 						"make": "$payload.make",
 						"model": "$payload.model",
 						"vin": "$payload.vin",
-						"driverId": {
-							"type": "ENTITY_REF",
-							"refType": "Contact",
-							"value": "$vars.driver.Crm_Id"
-						}
+						"driverId": "crmEntity('Contact', $vars.driver.Crm_Id)"
 					}
 				},
 				{
 					"type": "CREATE_CRM_ENTITY",
 					"destEntityName": "vehicle"
+				},
+				{
+					"type": "TRANSFORM",
+					"jsonSchema": {
+						"rego": "$vars.truck.rego",
+						"organisationId": "crmEntity('Company', $input.orgId)",
+						"driverId": "crmEntity('Contact', $vars.driver.Crm_Id)"
+					}
+				},
+				{
+					"type": "CREATE_CRM_ENTITY",
+					"destEntityName": "vehicleRegistration"
 				}
 			]
 		}
