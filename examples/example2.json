@@ -9,11 +9,11 @@
 	"address.postcode": "3072",
 	"address.country.code": "au",
 	"trucks[0].make": "mazda",
-	"trucks[0].model": "mazda",
-	"trucks[0].vin": "mazda",
-	"trucks[0].rego": "mazda",
+	"trucks[0].model": "cx3",
+	"trucks[0].vin": "vin1",
+	"trucks[0].rego": "cx3-123",
 	"trucks[1].make": "mazda",
-	"trucks[1].model": "mazda",
-	"trucks[1].vin": "mazda",
-	"trucks[1].rego": "mazda"
+	"trucks[1].model": "cx5",
+	"trucks[1].vin": "vin2",
+	"trucks[1].rego": "cx5-123"
 }
