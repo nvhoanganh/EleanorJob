@@ -7,7 +7,7 @@
 - each `step` = Pure Function (including the big ForEach)
 - each `step` has the same signature (same inputs, same output)
 - each `step` has different required properties and has different implementation. For exampe
-- developers can use this https://anthony-demo-monaco.surge.sh to create the JSON file with intellisense
+- developers can use this https://eleanorjob.surge.sh to create the JSON file with intellisense
 ```json
 {
   "type": "TRANSFORM",
