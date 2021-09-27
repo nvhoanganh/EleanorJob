@@ -1,0 +1,10 @@
+{
+    "firstName": "Fred",
+    "lastName" :"Frog",
+       "enquiry[0].message" :"This is the first enquiry",
+       "enquiry[0].subject" :"first enquiry",
+       "enquiry[0].email" :"one@test.com",
+       "enquiry[1].message" :"This is the second enquiry",
+       "enquiry[1].subject" :"second enquiry",
+       "enquiry[1].email" :"second @ test.com"
+    }

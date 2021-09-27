@@ -1,0 +1,42 @@
+{
+  "steps": [
+    {
+      "type": "TRANSFORM",
+      "jsonSchema": {
+        "firstname": "$payload.firstName",
+        "lastname": "$payload.lastName"
+      }
+    },
+    {
+      "type": "CREATE_CRM_ENTITY",
+      "destEntityName": "contact"
+    },
+    {
+      "type": "SET_VARIABLE",
+      "name": "contactId",
+      "value": "$payload.Crm_Id"
+    },
+    {
+      "type": "FOR_EACH",
+      "collection": "$input.enquiry",
+      "steps": [
+        {
+          "type": "SET_VARIABLE",
+          "name": "enquiry",
+          "value": "$payload"
+        },
+        {
+          "type": "TRANSFORM",
+          "jsonSchema": {            
+            "form_name": "$payload.subject",
+            "form_contactid": "crmEntity('contact',$vars.contactId.Crm_Id)"
+          }
+        },
+        {
+          "type": "CREATE_CRM_ENTITY",
+          "destEntityName": "form_enquiry"
+        }
+      ]
+    }
+  ]
+}
