@@ -29,7 +29,7 @@
           "type": "TRANSFORM",
           "jsonSchema": {            
             "form_name": "$payload.subject",
-            "form_contactid": "crmEntity('contact',$vars.contactId.Crm_Id)"
+            "form_contactid": "crmEntity('contact',$vars.contactId)"
           }
         },
         {
